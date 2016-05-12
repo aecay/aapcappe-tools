@@ -1,0 +1,14 @@
+- multiple interview files
+- static generator
+- carry time info over
+- script to subset textgrids per sentence
+
+- download buttons
+  - individual audio
+  - all audio (zip)
+  - psd results
+  - subsetted textgrid
+
+- copyable citation for annotald – add to website, user’s manual, github page
+
+- icon for sound in annotald
