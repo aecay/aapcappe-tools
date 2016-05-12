@@ -1,0 +1,4 @@
+*.TextGrid
+*.wav
+/annotaldLog.txt
+*.psd
