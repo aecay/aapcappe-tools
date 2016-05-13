@@ -1,14 +1,20 @@
-- multiple interview files
+X multiple interview files
 - static generator
-- carry time info over
-- script to subset textgrids per sentence
+X make sure that time info is carried over in CS searches
+X script to subset textgrids per sentence
 
 - download buttons
-  - individual audio
-  - all audio (zip)
+  X individual audio+textgrid (zip)
+  - all audio+textgrid (zip)
   - psd results
-  - subsetted textgrid
 
 - copyable citation for annotald – add to website, user’s manual, github page
 
-- icon for sound in annotald
+X icon for sound in annotald
+
+- add info about audio feature to manual
+
+shortcomings:
+
+FILE in the TIME metadata is (may be) redundant – we could instead get
+this info from the ID, assuming it is in a usable format
