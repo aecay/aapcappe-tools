@@ -5,6 +5,11 @@ import soundfile
 import sys
 import textgrid
 import math
+import os
+
+
+if not os.path.isdir("audio"):
+    os.mkdir("audio")
 
 
 def get_interval(tree):
@@ -12,9 +17,16 @@ def get_interval(tree):
     if metadata.node != "METADATA":
         return
 
-    start = float(metadata[0][0][0])
-    end = float(metadata[0][1][0])
-    return (start, end)
+    for subtree in metadata:
+        if subtree.node == "TIME":
+            for sst in subtree:
+                if sst.node == "START":
+                    start = float(sst[0])
+                elif sst.node == "END":
+                    end = float(sst[0])
+                elif sst.node == "FILE":
+                    filename = sst[0]
+    return (start, end, filename)
 
 sound_data, sample_rate = soundfile.read(sys.argv[2])
 
@@ -24,8 +36,10 @@ with open(sys.argv[1]) as infile:
 intervals = list(filter(lambda x: x is not None, map(get_interval, trees)))
 
 for interval in intervals:
-    soundfile.write("%s_%s.wav" % (int(interval[0] * 100),
-                                   int(interval[1] * 100)),
+    centisecs_begin = int(interval[0] * 100)
+    centisecs_end = int(interval[1] * 100)
+    soundfile.write("audio/%s_%s_%s.wav" %
+                    (interval[2], centisecs_begin, centisecs_end),
                     sound_data[int(math.floor(sample_rate * interval[0])):
                                int(math.ceil(sample_rate * interval[1]))],
                     sample_rate)
@@ -47,5 +61,5 @@ for interval in intervals:
     tg.minTime = 0
     tg.maxTime = interval[1] - interval[0]
     # TODO: remove empty tiers
-    tg.write("%s_%s.TextGrid" % (int(interval[0] * 100),
-                                 int(interval[1] * 100)))
+    tg.write("audio/%s_%s_%s.TextGrid" %
+             (interval[2], centisecs_begin, centisecs_end))

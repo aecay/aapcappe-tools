@@ -6,6 +6,7 @@ import sys
 import re
 
 TIMECODE_RE = "<(\\$\\$)?([A-Za-z]+)_(xmin|xmax)=(?P<time>[0-9]+\\.[0-9]+)>"
+FILECODE_RE = "<BEGIN_(.+)>"
 
 
 def is_timecode_first(tree):
@@ -52,8 +53,13 @@ def get_root(tree):
 with open(sys.argv[1]) as infile:
     trees = list(map(T.Tree, infile.read().split("\n\n")))
 
+filename = "NONE"
+
 for i in range(len(trees)):
     if trees[i][0].node == "CODE":
+        m = re.match(FILECODE_RE, trees[i][0][0])
+        if m:
+            filename = m.group(1)
         continue
     timecodes = get_timecodes(trees[i])
     if is_timecode_first(get_root(trees[i])):
@@ -82,8 +88,8 @@ for i in range(len(trees)):
         except:
             last = 9999         # TODO: fixme
 
-    trees[i].insert(0, T.Tree("(METADATA (TIME (START %s) (END %s)))"
-                              % (first, last)))
+    trees[i].insert(0, T.Tree("(METADATA (TIME (FILE %s) (START %s) (END %s)))"
+                              % (filename, first, last)))
 
 sys.stdout.write("\n\n".join(map(lambda x: x.pprint(), trees)))
 
